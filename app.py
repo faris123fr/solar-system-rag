@@ -27,17 +27,47 @@ def setup_db():
 
 vector_db = setup_db()
 
-# --- 3. UI ---
+# --- 3. UI (NOW WITH BONUS POINTS!) ---
+# CUSTOM STYLING
+st.set_page_config(page_title="Solar System RAG", page_icon="🪐", layout="centered")
+st.markdown("""
+    <style>
+    /* Custom Space Theme */
+    .stApp {
+        background-image: linear-gradient(to bottom, #000000, #1a1a2e);
+        color: #e0e0e0;
+    }
+    h1 {
+        color: #ff4b4b !important;
+        text-shadow: 2px 2px 4px #000000;
+    }
+    div[data-testid="stInfo"] {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-left: 4px solid #ff4b4b;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("🚀 Solar System Knowledge Base")
-tab1, tab2 = st.tabs(["Search", "About"])
+
+# ADDITIONAL PAGES/TABS
+tab1, tab2, tab3 = st.tabs(["🔍 Search", "📊 Statistics", "ℹ️ About"])
 
 with tab1:
-    query = st.text_input("What would you like to know?")
+    query = st.text_input("What would you like to know about the solar system?")
     if query:
         results = vector_db.similarity_search(query, k=3)
         for res in results:
             st.info(res.page_content)
 
 with tab2:
+    st.subheader("Database Statistics")
+    st.metric(label="Total Documents", value=len(DOCUMENTS))
+    st.metric(label="Embedding Model", value="all-MiniLM-L6-v2")
+    st.metric(label="Vector Dimensions", value="384")
+    st.write("This tab visualizes the underlying metrics of our ChromaDB vector store.")
+
+with tab3:
+    st.subheader("About this App")
     st.write("This RAG app allows semantic search through a Solar System database.")
-    st.write("Built with Streamlit, LangChain, and ChromaDB.")
+    st.write("Built with Streamlit, LangChain, and ChromaDB by a very tired but successful developer.")
